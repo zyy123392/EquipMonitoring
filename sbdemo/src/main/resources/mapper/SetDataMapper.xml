@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyy.dao.SetDataMapper" >
+  <resultMap id="BaseResultMap" type="com.zyy.model.SetData" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="timeslot" property="timeslot" jdbcType="INTEGER" />
+    <result column="temthreshold" property="temthreshold" jdbcType="DOUBLE" />
+    <result column="settingtem" property="settingTem" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, timeslot, temthreshold
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from collocate_table
+    where id = '111'
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from collocate_table
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zyy.model.SetData" >
+    insert into collocate_table (id, timeslot, temthreshold
+      )
+    values (#{id,jdbcType=VARCHAR}, #{timeslot,jdbcType=INTEGER}, #{temthreshold,jdbcType=DOUBLE}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zyy.model.SetData" >
+    insert into collocate_table
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="timeslot != null" >
+        timeslot,
+      </if>
+      <if test="temthreshold != null" >
+        temthreshold,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="timeslot != null" >
+        #{timeslot,jdbcType=INTEGER},
+      </if>
+      <if test="temthreshold != null" >
+        #{temthreshold,jdbcType=DOUBLE},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zyy.model.SetData" >
+    update collocate_table
+    <set >
+      <if test="timeslot != null" >
+        timeslot = #{timeslot,jdbcType=INTEGER},
+      </if>
+      <if test="temthreshold != null" >
+        temthreshold = #{temthreshold,jdbcType=DOUBLE},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zyy.model.SetData" >
+    update collocate_table
+    set timeslot = #{timeslot,jdbcType=INTEGER},
+      temthreshold = #{temthreshold,jdbcType=DOUBLE}
+    where id = '111'
+  </update>
+  <update id="updateSettingTem" parameterType="java.lang.Integer" >
+    update collocate_table
+    set settingtem = #{settingTem,jdbcType=INTEGER}
+    where id = '111'
+  </update>
+  <select id="selectTem" resultType="com.zyy.model.SetData" >
+    select settingtem,status
+    from collocate_table
+    where id = '111'
+  </select>
+  <update id="updateStatus" parameterType="java.lang.Integer" >
+    update collocate_table
+    set status = #{status,jdbcType=INTEGER}
+    where id = '111'
+  </update>
+
+</mapper>

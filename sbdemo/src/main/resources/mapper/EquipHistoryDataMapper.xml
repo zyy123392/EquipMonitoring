@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyy.dao.EquipHistoryDataMapper" >
+  <resultMap id="BaseResultMap" type="com.zyy.model.EquipData" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="deviceId" property="deviceid" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="tem" property="tem" jdbcType="DOUBLE" />
+    <result column="hum" property="hum" jdbcType="DOUBLE" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, deviceId, time, tem, hum, status
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from data_history
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from data_history
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zyy.model.EquipData" >
+    insert into data_history (id, deviceId, time, 
+      tem, hum, status)
+    values (#{id,jdbcType=VARCHAR}, #{deviceid,jdbcType=VARCHAR}, #{time,jdbcType=VARCHAR}, 
+      #{tem,jdbcType=DOUBLE}, #{hum,jdbcType=DOUBLE}, #{status,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zyy.model.EquipData" >
+    insert into data_history
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="deviceid != null" >
+        deviceId,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="tem != null" >
+        tem,
+      </if>
+      <if test="hum != null" >
+        hum,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="deviceid != null" >
+        #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="tem != null" >
+        #{tem,jdbcType=DOUBLE},
+      </if>
+      <if test="hum != null" >
+        #{hum,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zyy.model.EquipData" >
+    update data_history
+    <set >
+      <if test="deviceid != null" >
+        deviceId = #{deviceid,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="tem != null" >
+        tem = #{tem,jdbcType=DOUBLE},
+      </if>
+      <if test="hum != null" >
+        hum = #{hum,jdbcType=DOUBLE},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zyy.model.EquipData" >
+    update data_history
+    set deviceId = #{deviceid,jdbcType=VARCHAR},
+      time = #{time,jdbcType=VARCHAR},
+      tem = #{tem,jdbcType=DOUBLE},
+      hum = #{hum,jdbcType=DOUBLE},
+      status = #{status,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="statistics" resultType="com.zyy.model.StatisticResult" parameterType="java.lang.Integer">
+    select any_value(AVG(tem)) as tem,any_value(AVG(hum)) as hum, any_value(SUBSTR(time,#{arg1},#{arg2})) as date
+    from data_history
+    where DATE_SUB(CURDATE(), INTERVAL #{arg0} DAY) &lt; time
+    GROUP BY SUBSTR(time,#{arg1},#{arg2})
+    ORDER BY SUBSTR(time,#{arg1},#{arg2})
+  </select>
+  <select id="statisticsMonth" resultType="com.zyy.model.StatisticResult" parameterType="java.lang.Integer">
+    select any_value(AVG(tem)) as tem,any_value(AVG(hum)) as hum, any_value(SUBSTR(time,#{arg0},#{arg1})) as date
+    from data_history
+    where any_value(SUBSTR(time,1,2)) = '19'
+    GROUP BY SUBSTR(time,#{arg0},#{arg1})
+    ORDER BY SUBSTR(time,#{arg0},#{arg1})
+  </select>
+  <select id="statisticsYear" resultType="com.zyy.model.StatisticResult" parameterType="java.lang.Integer">
+    select any_value(AVG(tem)) as tem,any_value(AVG(hum)) as hum, any_value(SUBSTR(time,#{arg0},#{arg1})) as date
+    from data_history
+
+    GROUP BY SUBSTR(time,#{arg0},#{arg1})
+    ORDER BY SUBSTR(time,#{arg0},#{arg1})
+  </select>
+</mapper>
