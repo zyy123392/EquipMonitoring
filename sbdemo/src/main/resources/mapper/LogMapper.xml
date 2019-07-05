@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyy.dao.LogMapper" >
+  <resultMap id="BaseResultMap" type="com.zyy.model.Log" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="httpmethod" property="httpmethod" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
+    <result column="classmethod" property="classmethod" jdbcType="VARCHAR" />
+    <result column="args" property="args" jdbcType="VARCHAR" />
+    <result column="url" property="url" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, time, httpmethod, ip, classmethod, args
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from t_log
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from t_log
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zyy.model.Log" >
+    insert into t_log (id, time, httpmethod, 
+      ip, classmethod, args ,url
+      )
+    values (#{id,jdbcType=VARCHAR}, #{time,jdbcType=VARCHAR}, #{httpmethod,jdbcType=VARCHAR}, 
+      #{ip,jdbcType=VARCHAR}, #{classmethod,jdbcType=VARCHAR}, #{args,jdbcType=VARCHAR}, #{url,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zyy.model.Log" >
+    insert into t_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="httpmethod != null" >
+        httpmethod,
+      </if>
+      <if test="ip != null" >
+        ip,
+      </if>
+      <if test="classmethod != null" >
+        classmethod,
+      </if>
+      <if test="args != null" >
+        args,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="httpmethod != null" >
+        #{httpmethod,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="classmethod != null" >
+        #{classmethod,jdbcType=VARCHAR},
+      </if>
+      <if test="args != null" >
+        #{args,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zyy.model.Log" >
+    update t_log
+    <set >
+      <if test="time != null" >
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="httpmethod != null" >
+        httpmethod = #{httpmethod,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
+      <if test="classmethod != null" >
+        classmethod = #{classmethod,jdbcType=VARCHAR},
+      </if>
+      <if test="args != null" >
+        args = #{args,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zyy.model.Log" >
+    update t_log
+    set time = #{time,jdbcType=VARCHAR},
+      httpmethod = #{httpmethod,jdbcType=VARCHAR},
+      ip = #{ip,jdbcType=VARCHAR},
+      classmethod = #{classmethod,jdbcType=VARCHAR},
+      args = #{args,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+</mapper>

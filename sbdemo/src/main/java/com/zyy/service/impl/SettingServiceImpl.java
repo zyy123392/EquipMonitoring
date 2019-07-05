@@ -3,6 +3,7 @@ package com.zyy.service.impl;
 import com.zyy.dao.SetDataMapper;
 import com.zyy.model.MyResult;
 import com.zyy.model.SetData;
+import com.zyy.service.MonitorTemperature;
 import com.zyy.service.SettingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,6 +13,8 @@ public class SettingServiceImpl implements SettingService {
 
     @Autowired
     SetDataMapper setDataMapper;
+    @Autowired
+    MonitorTemperature monitorTemperature;
     @Override
     public MyResult updateSetting(SetData record) {
         MyResult result = new MyResult();
@@ -19,6 +22,7 @@ public class SettingServiceImpl implements SettingService {
         if(result.getCode() == 1){
             result.setMsg("设置成功！");
             System.out.println("设置成功！");
+            monitorTemperature.setCron("0/"+record.getTimeslot()+" * * * * *");
         }else{
             result.setMsg("设置失败！");
             System.out.println("设置失败");

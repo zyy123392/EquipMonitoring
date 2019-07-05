@@ -6,7 +6,8 @@
 import echarts from "echarts";
 require("echarts/theme/macarons"); // echarts theme
 import resize from "./mixins/resize";
-
+import axios from "axios";
+import setting from "./Setting"
 export default {
   mixins: [resize],
   props: {
@@ -34,18 +35,18 @@ export default {
   data() {
     return {
       chart: null,
+      temthreshold : 30
     };
   },
   watch: {
     chartData: {
       deep: true,
       handler(val) {
-          if(val.data.length > 9){
-              val.data.shift()
-              val.time.shift()
-          }
+        if (val.data.length > 9) {
+          val.data.shift();
+          val.time.shift();
+        }
         this.setOptions(val);
-        console.log(val)
       }
     }
   },
@@ -53,6 +54,7 @@ export default {
     this.$nextTick(() => {
       this.initChart();
     });
+this.getSetting()
   },
   beforeDestroy() {
     if (!this.chart) {
@@ -67,27 +69,26 @@ export default {
       this.setOptions(this.chartData);
     },
     setOptions({ time, data } = {}) {
-        console.log(time)
-        console.log(data)
+      
+      var _this = this;
       this.chart.setOption({
         xAxis: {
-          type: 'category',
+          type: "category",
           data: time,
           boundaryGap: false,
-          axisLine:{
-                lineStyle:{
-                    color:'#e42b0a',
-                }
-            },
+          axisLine: {
+            lineStyle: {
+              color: "#e42b0a"
+            }
+          }
         },
-        title : {
-            show:true,//显示策略，默认值true,可选为：true（显示） | false（隐藏）
-            text: '温度(°C)',//主标题文本，'\n'指定换行
-            textStyle: {//主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
-                
-                color: "#e42b0a"
-            },
-
+        title: {
+          show: true, //显示策略，默认值true,可选为：true（显示） | false（隐藏）
+          text: "温度(°C)", //主标题文本，'\n'指定换行
+          textStyle: {
+            //主标题文本样式{"fontSize": 18,"fontWeight": "bolder","color": "#333"}
+            color: "#e42b0a"
+          }
         },
         grid: {
           left: 10,
@@ -97,46 +98,69 @@ export default {
           containLabel: true
         },
         tooltip: {
-          trigger: 'axis',
+          trigger: "axis",
           axisPointer: {
-            type: 'cross'
+            type: "cross"
           },
           padding: [5, 10]
         },
-        yAxis: { 
-        boundaryGap: [0, '50%'],
-        type: 'value',
-        axisLine:{
-                lineStyle:{
-                    color:'#e42b0a',
-                }
-            },
-        },
-        series: [
-        {
-          name: 'actual',
-          smooth: true,
-          type: 'line',
-          itemStyle: {
-            normal: {
-              color: '#e42b0a',
-              lineStyle: {
-                color: '#e42b0a',
-                width: 2
-              },
-              areaStyle: {
-                color: '#e42b0a'
-              },
-              stack: 'a',
+        yAxis: {
+          boundaryGap: [0, "50%"],
+          type: "value",
+          axisLine: {
+            lineStyle: {
+              color: "#e42b0a"
             }
-          },
-          
-          data: data,
-          animationDuration: 2800,
-          animationEasing: 'quadraticOut'
-        }]
-      })
+          }
+        },
+        visualMap: {
+                    show: false,
+                    pieces: [
+                      {
+                        gt: 0,
+                        lte: _this.temthreshold,          //这儿设置基线上下颜色区分 基线下面为绿色
+                        color: '#03d6d6'
+                    }, {
+                                
+                        gt: _this.temthreshold,          //这儿设置基线上下颜色区分 基线上面为红色
+                        color: '#e91642'
+                    }]
+                },
+
+        series: [
+          {
+            type: "line",
+            name: "actual",
+            smooth: true,
+            
+            
+            data: data,
+            animationDuration: 2800,
+            animationEasing: "quadraticOut",
+            markLine: {
+              data: [{ name: "温度阈值", yAxis: _this.temthreshold }],
+              label: {
+                normal: {
+                  formatter: "温度\n阈值" // 这儿设置安全基线
+                }
+              }
+            }
+          }
+        ]
+      });
+    },
+getSetting() {
+      axios
+        .get("/api/setting/getSetting")
+        .then(response => {
+          console.log(response.data)
+          this.temthreshold = response.data.temthreshold
+        })
+        .catch(function(error) {
+          alert(error);
+        });
     }
-  }
+  },
+  
 };
 </script>

@@ -8,13 +8,28 @@
     </el-col>
     <el-col :span="18">
       <el-col :span="6">
-        <el-card shadow="hover" class="grid-content" style="text-align:center" @click.native="turnOn">开启空调</el-card>
+        <el-card
+          shadow="hover"
+          class="grid-content"
+          style="text-align:center"
+          @click.native="turnOn"
+        >开启空调</el-card>
       </el-col>
       <el-col :span="6">
-        <el-card shadow="hover" class="grid-content" style="text-align:center" @click.native="turnOff">关闭空调</el-card>
+        <el-card
+          shadow="hover"
+          class="grid-content"
+          style="text-align:center"
+          @click.native="turnOff"
+        >关闭空调</el-card>
       </el-col>
       <el-col :span="6">
-        <el-card shadow="hover" class="grid-content" style="text-align:center" @click.native="turnUp">升高温度</el-card>
+        <el-card
+          shadow="hover"
+          class="grid-content"
+          style="text-align:center"
+          @click.native="turnUp"
+        >升高温度</el-card>
       </el-col>
       <el-col :span="6">
         <el-card
@@ -30,17 +45,31 @@
 <script>
 import axios from "axios";
 export default {
-    name: "airCondition",
+  name: "airCondition",
+  props: {
+    tableData: {
+      type: Array,
+      required: true
+    }
+  },
   data() {
     return {
       status: "",
       tem: 0
     };
   },
+  watch: {
+    tableData: {
+      deep: true,
+      handler(val) {
+        if (this.tem > 16) {
+          this.tem = this.tem - 1;
+        }
+      }
+    }
+  },
   methods: {
-
     turnOn() {
-        
       axios
         .get("/api/control/turnOn")
         .then(response => {
@@ -79,19 +108,18 @@ export default {
         .then(response => {
           this.getStatus();
           this.$message(response.data);
-          
         })
         .catch(function(error) {
           console.log(error);
         });
     },
-    getStatus(){
+    getStatus() {
       axios
         .get("/api/setting/getStatus")
         .then(response => {
-          if(response.data.status === 0){
+          if (response.data.status === 0) {
             this.status = "关闭";
-          }else{
+          } else {
             this.status = "开启";
           }
           this.tem = response.data.settingTem;
@@ -102,7 +130,7 @@ export default {
         });
     }
   },
-  mounted(){
+  mounted() {
     this.getStatus();
   }
 };

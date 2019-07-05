@@ -52,8 +52,8 @@
             </div>
           </el-col>
         </el-row>
-
-        <el-row :gutter="32">
+<air-control style="margin-bottom:32px" :table-data="tableData"></air-control>
+        <el-row :gutter="32" >
           <el-col :xs="24" :sm="24" :lg="12">
             <div class="chart-wrapper">
               <tem-chart :chart-data="datas"/>
@@ -65,13 +65,24 @@
             </div>
           </el-col>
         </el-row>
-        <air-control></air-control>
+        <h4 style="margin-top:0px">自动监控日志</h4>
+        <el-table :data="tableData" style="width: 100%;" max-height="250" :default-sort = "{prop: 'time', order: 'descending'}">
+      <el-table-column prop="time" sortable label="发生时间" width="180"></el-table-column>
+      <el-table-column prop="tem" label="当前温度" width="180"></el-table-column>
+      <el-table-column prop="settingtem" label="空调温度"></el-table-column>
+      <el-table-column prop="status" label="状态"></el-table-column>
+      
+      <el-table-column prop="operation" label="操作"></el-table-column>
+    </el-table>
       </el-main>
     </div>
+    
 
     <el-dialog title="设备列表" :visible.sync="dialogTableVisible">
       <equip-table v-on:selectEquip="changEquip"></equip-table>
     </el-dialog>
+
+    
   </el-container>
 </template>
 
@@ -85,6 +96,25 @@ import AirControl from "./AirCondition";
 import Menu from "./Menu";
 var timeTip = "  ";
 var firstTip = 0;
+
+var socket;
+var ms = new Array(); //后端传来的消息
+if (typeof WebSocket == "undefined") {
+  console.log("您的浏览器不支持WebSocket");
+} else {
+  console.log("您的浏览器支持WebSocket");
+  //实现化WebSocket对象，指定要连接的服务器地址与端口  建立连接
+  //等同于socket = new WebSocket("ws://localhost:8081/checkcentersys/websocket/20");
+  socket = new WebSocket("ws://localhost:8880/websocket/aaa");
+  //打开事件
+  socket.onopen = function() {
+    console.log("Socket 已打开");
+    //socket.send("这是来自客户端的消息" + location.href + new Date());
+  };
+  //获得消息事件
+  
+}
+
 export default {
   components: {
     CountTo,
@@ -92,10 +122,11 @@ export default {
     HumChart,
     EquipTable,
     AirControl,
-    "header-menu":Menu
+    "header-menu": Menu
   },
   data() {
     return {
+      tableData: [],
       equipCount: 100,
       temperature: 29.1,
       humidity: 59.3,
@@ -114,8 +145,7 @@ export default {
 
       dialogTableVisible: false,
       gridData: [{}],
-      currentRow: null,
-      
+      currentRow: null
     };
   },
   methods: {
@@ -171,19 +201,44 @@ export default {
         timeTip = response.data[i].time;
       }
     },
-    
+    getLog(){
+            axios
+        .get("/api/mlog/find")
+        .then(response => {
+          console.log(response.data)
+          this.tableData = response.data;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    }
   },
+
   mounted() {
+    var _this = this
     this.timer = setInterval(this.showData, 1000);
+    this.getLog();
+    socket.onmessage = function(msg) {
+    console.log(msg.data);
+    var ms1 = msg.data.split(",");
+    var tmp = {
+      time: ms1[0],
+      tem: ms1[1],
+      settingtem: ms1[2],
+      status: "已超过限定温度",
+      operation: "已自动调低1度。"
+    };
+    console.log("adsffafffdd")
+    _this.tableData.push(tmp);
+    //发现消息进入    开始处理前端触发逻辑
+  };
   },
   beforeDestroy() {
     clearInterval(this.timer);
-  },
-  
+  }
 };
 </script>
 <style lang="scss" scoped>
-
 .home-container {
   height: 100%;
   position: absolute;

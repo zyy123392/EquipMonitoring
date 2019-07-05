@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zyy.dao.MonitorLogMapper" >
+  <resultMap id="BaseResultMap" type="com.zyy.model.MonitorLog" >
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="time" property="time" jdbcType="VARCHAR" />
+    <result column="tem" property="tem" jdbcType="DOUBLE" />
+    <result column="settingtem" property="settingtem" jdbcType="INTEGER" />
+    <result column="status" property="status" jdbcType="VARCHAR" />
+    <result column="operation" property="operation" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, time, tem, settingtem, status, operation
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from monitor_log
+    where id = #{id,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String" >
+    delete from monitor_log
+    where id = #{id,jdbcType=VARCHAR}
+  </delete>
+  <insert id="insert" parameterType="com.zyy.model.MonitorLog" >
+    insert into monitor_log (id, time, tem, 
+      settingtem, status, operation
+      )
+    values (#{id,jdbcType=VARCHAR}, #{time,jdbcType=VARCHAR}, #{tem,jdbcType=DOUBLE}, 
+      #{settingtem,jdbcType=INTEGER}, #{status,jdbcType=VARCHAR}, #{operation,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zyy.model.MonitorLog" >
+    insert into monitor_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="time != null" >
+        time,
+      </if>
+      <if test="tem != null" >
+        tem,
+      </if>
+      <if test="settingtem != null" >
+        settingtem,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="operation != null" >
+        operation,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=VARCHAR},
+      </if>
+      <if test="time != null" >
+        #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="tem != null" >
+        #{tem,jdbcType=DOUBLE},
+      </if>
+      <if test="settingtem != null" >
+        #{settingtem,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="operation != null" >
+        #{operation,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zyy.model.MonitorLog" >
+    update monitor_log
+    <set >
+      <if test="time != null" >
+        time = #{time,jdbcType=VARCHAR},
+      </if>
+      <if test="tem != null" >
+        tem = #{tem,jdbcType=DOUBLE},
+      </if>
+      <if test="settingtem != null" >
+        settingtem = #{settingtem,jdbcType=INTEGER},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=VARCHAR},
+      </if>
+      <if test="operation != null" >
+        operation = #{operation,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zyy.model.MonitorLog" >
+    update monitor_log
+    set time = #{time,jdbcType=VARCHAR},
+      tem = #{tem,jdbcType=DOUBLE},
+      settingtem = #{settingtem,jdbcType=INTEGER},
+      status = #{status,jdbcType=VARCHAR},
+      operation = #{operation,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=VARCHAR}
+  </update>
+  <select id="selectAll" resultMap="BaseResultMap">
+    select *
+    from monitor_log
+    order by time
+    LIMIT 20
+  </select>
+</mapper>

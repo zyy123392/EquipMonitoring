@@ -16,8 +16,6 @@ import java.net.Socket;
 public class AirConditionSerivceImpl implements AirConditionService {
     private final String TURNON = "50 fa 50 01 00 51";
     private final String TURNOFF = "50 fa 50 02 00 52";
-    private final String TURNOUP = "50 fa 50 03 00 53";
-    private final String TURNODOWN = "50 fa 50 04 00 54";
 
     @Autowired
     SettingService settingService;
@@ -80,7 +78,6 @@ public class AirConditionSerivceImpl implements AirConditionService {
         if(tem > 16 && tem < 30){
             String HexTem = Util.intToHex(tem);
             String com = "50 "+HexTem+" 00";
-            System.out.println(com);
             String com1 = Xor(com);
             String res = sendCommend("50 fa "+com1);
             System.out.println("50 fa "+com1);

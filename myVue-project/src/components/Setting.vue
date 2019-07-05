@@ -5,7 +5,7 @@
       <el-main style="padding: 32px 200px 16px;">
         <div style="margin-top:50px">
           <span class="demonstration">温度阈值(℃): {{value2}}℃</span>
-          <el-slider v-model="value2" :min="16" :max="30">></el-slider>
+          <el-slider v-model="value2" :min="16" :max="50">></el-slider>
         </div>
         <div style="margin-top:50px">
           <div>
@@ -13,7 +13,7 @@
           </div>
           <div style="text-align:center;margin-top:40px">
             <el-input-number v-model="timesolt1" @change="handleChange" :min="1"></el-input-number>
-            <span>分钟</span>
+            <span>秒</span>
           </div>
         </div>
         <div style="text-align:center;margin-top:140px">
@@ -26,7 +26,11 @@
 <script>
 import Menu from "./Menu";
 import axios from "axios";
+
+let solt ;
+
 export default {
+  solt,
   components: {
     "header-menu": Menu
   },
@@ -56,7 +60,6 @@ export default {
         .then(response => {
           if (response.data.code == 1) {
             this.$message("设置成功！");
-            
           } else {
             this.$message("设置失败");
           }
@@ -72,16 +75,16 @@ export default {
         .then(response => {
           this.value2 = response.data.temthreshold;
           this.timesolt1 = response.data.timeslot;
+          solt = this.timesolt1;
         })
         .catch(function(error) {
           alert(error);
         });
     }
   },
-  mounted(){
-    this.getSetting()
+  mounted() {
+    this.getSetting();
   }
-  
 };
 </script>
 

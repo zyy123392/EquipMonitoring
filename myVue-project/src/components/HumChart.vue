@@ -45,7 +45,6 @@ export default {
               val.time.shift()
           }
         this.setOptions(val);
-        console.log(val)
       }
     }
   },
@@ -67,8 +66,7 @@ export default {
       this.setOptions(this.chartData);
     },
     setOptions({ time, data } = {}) {
-        console.log(time)
-        console.log(data)
+        
       this.chart.setOption({
         xAxis: {
           type: 'category',
